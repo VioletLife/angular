@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 
 var NPM_SHRINKWRAP_FILE = 'npm-shrinkwrap.json';
-var NPM_SHRINKWRAP_CACHED_FILE = 'node_modules/npm-shrinkwrap.cached.json';
+var NPM_SHRINKWRAP_CACHED_FILE = 'node_modules/.npm-shrinkwrap.cached.json';
 var FS_OPTS = {encoding: 'utf-8'};
 var PROJECT_ROOT = path.join(__dirname, '../../');
 
@@ -18,14 +18,7 @@ function checkNodeModules(logOutput, purgeIfStale) {
     if (logOutput) console.error(':-( npm dependencies are stale or in an in unknown state!');
     if (purgeIfStale) {
       if (logOutput) console.log('    purging...');
-
-      var nodeModulesPath = path.join(PROJECT_ROOT, 'node_modules');
-
-      if (fs.existsSync(nodeModulesPath)) {
-        // lazy-load fs-extra
-        var fse = require('fs-extra');
-        fse.removeSync(nodeModulesPath);
-      }
+      _deleteDir(path.join(PROJECT_ROOT, 'node_modules'));
     }
   }
 
@@ -44,6 +37,26 @@ function _checkCache(markerFile, cacheMarkerFile) {
   var cacheMarkerContent = fs.readFileSync(absoluteCacheMarkerFilePath, FS_OPTS);
 
   return markerContent == cacheMarkerContent;
+}
+
+
+/**
+ * Custom implementation of recursive `rm` because we can't rely on the state of node_modules to
+ * pull in existing module.
+ */
+function _deleteDir(path) {
+  if( fs.existsSync(path) ) {
+    var subpaths = fs.readdirSync(path);
+    subpaths.forEach(function(subpath) {
+      var curPath = path + "/" + subpath;
+      if(fs.lstatSync(curPath).isDirectory()) {
+        _deleteDir(curPath);
+      } else {
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
 }
 
 

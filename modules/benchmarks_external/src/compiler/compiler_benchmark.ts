@@ -1,6 +1,6 @@
 // compiler benchmark in AngularJS 1.x
-import {getIntParameter, bindAction} from 'angular2/src/test_lib/benchmark_util';
-import angular = require("angular");
+import {getIntParameter, bindAction} from '@angular/testing/src/benchmark_util';
+declare var angular: any;
 
 export function main() {
   var ngEl = document.createElement('div');
@@ -9,7 +9,7 @@ export function main() {
 
 function loadTemplate(templateId, repeatCount) {
   var template = document.querySelectorAll(`#${templateId}`)[0];
-  var content = template.innerHTML;
+  var content = (<HTMLElement>template).innerHTML;
   var result = '';
   for (var i = 0; i < repeatCount; i++) {
     result += content;
@@ -24,61 +24,66 @@ function loadTemplate(templateId, repeatCount) {
 }
 
 angular.module('app', [])
-    .directive('dir0', [
-      '$parse',
-      function($parse) {
-        return {
-          compile: function($element, $attrs) {
-            var expr = $parse($attrs.attr0);
-            return function($scope) { $scope.$watch(expr, angular.noop); }
-          }
-        };
-      }
-    ])
-    .directive('dir1', [
-      '$parse',
-      function($parse) {
-        return {
-          compile: function($element, $attrs) {
-            var expr = $parse($attrs.attr1);
-            return function($scope) { $scope.$watch(expr, angular.noop); }
-          }
-        };
-      }
-    ])
-    .directive('dir2', [
-      '$parse',
-      function($parse) {
-        return {
-          compile: function($element, $attrs) {
-            var expr = $parse($attrs.attr2);
-            return function($scope) { $scope.$watch(expr, angular.noop); }
-          }
-        };
-      }
-    ])
-    .directive('dir3', [
-      '$parse',
-      function($parse) {
-        return {
-          compile: function($element, $attrs) {
-            var expr = $parse($attrs.attr3);
-            return function($scope) { $scope.$watch(expr, angular.noop); }
-          }
-        };
-      }
-    ])
-    .directive('dir4', [
-      '$parse',
-      function($parse) {
-        return {
-          compile: function($element, $attrs) {
-            var expr = $parse($attrs.attr4);
-            return function($scope) { $scope.$watch(expr, angular.noop); }
-          }
-        };
-      }
-    ])
+    .directive('dir0',
+               [
+                 '$parse',
+                 function($parse) {
+                   return {
+                     compile: function($element, $attrs) {
+                       var expr = $parse($attrs.attr0);
+                       return function($scope) { $scope.$watch(expr, angular.noop); }
+                     }
+                   };
+                 }
+               ])
+    .directive('dir1',
+               [
+                 '$parse',
+                 function($parse) {
+                   return {
+                     compile: function($element, $attrs) {
+                       var expr = $parse($attrs.attr1);
+                       return function($scope) { $scope.$watch(expr, angular.noop); }
+                     }
+                   };
+                 }
+               ])
+    .directive('dir2',
+               [
+                 '$parse',
+                 function($parse) {
+                   return {
+                     compile: function($element, $attrs) {
+                       var expr = $parse($attrs.attr2);
+                       return function($scope) { $scope.$watch(expr, angular.noop); }
+                     }
+                   };
+                 }
+               ])
+    .directive('dir3',
+               [
+                 '$parse',
+                 function($parse) {
+                   return {
+                     compile: function($element, $attrs) {
+                       var expr = $parse($attrs.attr3);
+                       return function($scope) { $scope.$watch(expr, angular.noop); }
+                     }
+                   };
+                 }
+               ])
+    .directive('dir4',
+               [
+                 '$parse',
+                 function($parse) {
+                   return {
+                     compile: function($element, $attrs) {
+                       var expr = $parse($attrs.attr4);
+                       return function($scope) { $scope.$watch(expr, angular.noop); }
+                     }
+                   };
+                 }
+               ])
     .run([
       '$compile',
       function($compile) {

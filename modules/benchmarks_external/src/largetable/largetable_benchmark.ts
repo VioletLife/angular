@@ -1,9 +1,5 @@
-import {
-  getIntParameter,
-  getStringParameter,
-  bindAction
-} from 'angular2/src/test_lib/benchmark_util';
-import angular = require("angular");
+import {getIntParameter, getStringParameter, bindAction} from '@angular/testing/src/benchmark_util';
+declare var angular: any;
 
 var totalRows = getIntParameter('rows');
 var totalColumns = getIntParameter('columns');
@@ -49,12 +45,7 @@ angular.module('app', [])
                   for (var i = 0; i < totalRows; i++) {
                     data[i] = [];
                     for (var j = 0; j < totalColumns; j++) {
-                      data[i][j] = {
-                        i: i,
-                        j: j,
-                        iFn: iGetter,
-                        jFn: jGetter
-                      };
+                      data[i][j] = {i: i, j: j, iFn: iGetter, jFn: jGetter};
                     }
                   }
                 })

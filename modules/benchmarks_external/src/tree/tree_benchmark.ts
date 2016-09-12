@@ -1,6 +1,6 @@
 // tree benchmark in AngularJS 1.x
-import {getIntParameter, bindAction} from 'angular2/src/test_lib/benchmark_util';
-import angular = require("angular");
+import {getIntParameter, bindAction} from '@angular/testing/src/benchmark_util';
+declare var angular: any;
 
 export function main() {
   angular.bootstrap(document.querySelector('tree'), ['app']);
@@ -19,41 +19,42 @@ angular.module('app', [])
                })
     // special directive for "if" as angular 1.3 does not support
     // recursive components.
-    .directive('treeIf', [
-      '$compile',
-      '$parse',
-      function($compile, $parse) {
-        var transcludeFn;
-        return {
-          compile: function(element, attrs) {
-            var expr = $parse(attrs.treeIf);
-            var template = '<tree data="' + attrs.treeIf + '"></tree>';
-            var transclude;
-            return function($scope, $element, $attrs) {
-              if (!transclude) {
-                transclude = $compile(template);
-              }
-              var childScope;
-              var childElement;
-              $scope.$watch(expr, function(newValue) {
-                if (childScope) {
-                  childScope.$destroy();
-                  childElement.remove();
-                  childScope = null;
-                  childElement = null;
-                }
-                if (newValue) {
-                  childScope = $scope.$new();
-                  childElement =
-                      transclude(childScope, function(clone) { $element.append(clone); });
-                }
-              });
-            }
+    .directive('treeIf',
+               [
+                 '$compile',
+                 '$parse',
+                 function($compile, $parse) {
+                   var transcludeFn;
+                   return {
+                     compile: function(element, attrs) {
+                       var expr = $parse('!!' + attrs.treeIf);
+                       var template = '<tree data="' + attrs.treeIf + '"></tree>';
+                       var transclude;
+                       return function($scope, $element, $attrs) {
+                         if (!transclude) {
+                           transclude = $compile(template);
+                         }
+                         var childScope;
+                         var childElement;
+                         $scope.$watch(expr, function(newValue) {
+                           if (childScope) {
+                             childScope.$destroy();
+                             childElement.remove();
+                             childScope = null;
+                             childElement = null;
+                           }
+                           if (newValue) {
+                             childScope = $scope.$new();
+                             childElement = transclude(childScope,
+                                                       function(clone) { $element.append(clone); });
+                           }
+                         });
+                       }
 
-          }
-        }
-      }
-    ])
+                     }
+                   }
+                 }
+               ])
     .config([
       '$compileProvider',
       function($compileProvider) { $compileProvider.debugInfoEnabled(false); }
